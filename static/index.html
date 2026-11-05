@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LUMINA AI</title>
+    <style>
+        :root {
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            color: #e9f2ff;
+            background: #0a1020;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            background: radial-gradient(ellipse at top, #182b51, #0a1020 65%);
+            min-height: 100vh;
+        }
+        .wrap {
+            max-width: 1120px;
+            margin: auto;
+            padding: 32px 18px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 26px;
+        }
+        .brand {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .brand span {
+            color: #60d6ff;
+        }
+        .tag {
+            color: #9db1ce;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .pill {
+            border: 1px solid #36506c;
+            border-radius: 50px;
+            padding: 9px 15px;
+            color: #a6c6dc;
+            font-size: 13px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            gap: 22px;
+        }
+        .card {
+            background: #111d34;
+            border: 1px solid #2b3b59;
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 12px 35px #0003;
+        }
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+        .muted {
+            color: #95a9c6;
+            font-size: 14px;
+        }
+        .lampbox {
+            text-align: center;
+            padding: 40px 8px 22px;
+        }
+        .bulb {
+            font-size: 100px;
+            line-height: 1;
+            filter: grayscale(1);
+            transition: 0.3s;
+        }
+        .bulb.on {
+            filter: none;
+            filter: drop-shadow(0 0 28px #ffc53d);
+        }
+        .state {
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 22px;
+        }
+        .mode {
+            color: #7fd7b2;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        button {
+            border: 0;
+            cursor: pointer;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 13px 18px;
+            background: #223857;
+            color: white;
+        }
+        button:hover {
+            filter: brightness(1.15);
+        }
+        button.primary {
+            background: #18a978;
+            flex: 1;
+        }
+        button.secondary {
+            background: #33435d;
+            flex: 1;
+        }
+        .chat {
+            height: 375px;
+            overflow: auto;
+            padding: 12px 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .bubble {
+            max-width: 88%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #273955;
+            align-self: flex-start;
+        }
+        .bubble.user {
+            background: #17618e;
+            align-self: flex-end;
+        }
+        .composer {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .composer input {
+            background: #0a162a;
+            border: 1px solid #364b6c;
+            color: white;
+            border-radius: 12px;
+            padding: 13px;
+            min-width: 0;
+            flex: 1;
+            font-size: 14px;
+        }
+        .composer button {
+            background: #1b91ce;
+        }
+        .mic {
+            background: #344b70 !important;
+            font-size: 18px;
+        }
+        .mic.active {
+            background: #b6344c !important;
+        }
+        .footer {
+            margin-top: 18px;
+            color: #92a9c7;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .footer label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footnote {
+            margin-top: 22px;
+            text-align: center;
+            color: #6e89ad;
+            font-size: 13px;
+        }
+        @media (max-width: 760px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .wrap {
+                padding: 20px 12px;
+            }
+            .card {
+                padding: 18px;
+            }
+            .header {
+                align-items: start;
+            }
+            .pill {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <header class="header">
+            <div>
+                <div class="brand">LUMINA <span>AI</span></div>
+                <div class="tag">Sistema inteligente de iluminación · Prototipo de software</div>
+            </div>
+            <div class="pill" id="aiMode">Modo demostración</div>
+        </header>
+
+        <div class="grid">
+            <section class="card">
+                <h2>Control de iluminación</h2>
+                <div class="muted">Control y monitoreo en tiempo real de la simulación</div>
+                
+                <div class="lampbox">
+                    <div class="bulb" id="bulb">💡</div>
+                    <div class="state" id="state">Foco apagado</div>
+                    <div class="mode">● ESP32 virtual · Simulación activa</div>
+                </div>
+                
+                <div class="buttons">
+                    <button class="primary" onclick="control('on')">Encender</button>
+                    <button class="secondary" onclick="control('off')">Apagar</button>
+                </div>
+                
+                <div class="buttons">
+                    <button style="width:100%" onclick="control('status')">Consultar estado</button>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Asistente conversacional</h2>
+                <div class="muted">Habla o escribe para interactuar con Lumina</div>
+                
+                <div class="chat" id="chat">
+                    <div class="bubble">¡Hola! Soy Lumina. Puedo ayudarte a controlar la iluminación. ¿Qué te gustaría hacer?</div>
+                </div>
+                
+                <form class="composer" id="form">
+                    <input id="message" placeholder="Escribe o utiliza el micrófono..." autocomplete="off">
+                    <button type="button" class="mic" id="mic" title="Hablar">🎙</button>
+                    <button type="submit">Enviar ➤</button>
+                </form>
+                
+                <div class="footer">
+                    <label>
+                        <input type="checkbox" id="voice" checked> Respuestas por voz
+                    </label>
+                    <span id="voiceStatus">Micrófono listo</span>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <script>
+        let history = [];
+        let busy = false;
+        const $ = id => document.getElementById(id);
+
+        function update(s) {
+            $('bulb').classList.toggle('on', s.on);
+            $('state').textContent = s.on ? 'Foco encendido' : 'Foco apagado';
+        }
+
+        function bubble(text, who) {
+            const el = document.createElement('div');
+            el.className = 'bubble ' + (who || '');
+            el.textContent = text;
+            $('chat').appendChild(el);
+            $('chat').scrollTop = $('chat').scrollHeight;
+        }
+
+        function speak(text) {
+            if (!$('voice').checked || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'es-ES';
+            u.rate = 1;
+            window.speechSynthesis.speak(u);
+        }
+
+        async function control(action) {
+            try {
+                const r = await fetch('/api/control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+                const s = await r.json();
+                update(s);
+                
+                let msg;
+                if (action === 'status') {
+                    msg = `El foco virtual está ${s.on ? 'encendido' : 'apagado'}.`;
+                } else if (action === 'on') {
+                    msg = 'He encendido el foco virtual.';
+                } else {
+                    msg = 'He apagado el foco virtual.';
+                }
+                
+                bubble(msg);
+                speak(msg);
+            } catch (e) {
+                bubble('Error de conexión con el servidor.');
+            }
+        }
+
+        $('form').addEventListener('submit', async e => {
+            e.preventDefault();
+            if (busy) return;
+            
+            const msg = $('message').value.trim();
+            if (!msg) return;
+            
+            $('message').value = '';
+            bubble(msg, 'user');
+            busy = true;
+
+            try {
+                const r = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, history })
+                });
+                const s = await r.json();
+                
+                update(s);
+                bubble(s.reply);
+                speak(s.reply);
+                
+                history.push({ role: 'user', content: msg }, 
+                             { role: 'assistant', content: s.reply });
+                history = history.slice(-12);
+                
+                $('aiMode').textContent = 
+                    s.ai_mode === 'openai' ? '● IA conectada' :
+                    s.ai_mode === 'error' ? '● IA no disponible' : '● Modo demostración';
+            } catch (e) {
+                bubble('No se pudo comunicar con el servidor.');
+            } finally {
+                busy = false;
+            }
+        });
+
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SR) {
+            const rec = new SR();
+            rec.lang = 'es-ES';
+            rec.interimResults = false;
+            
+            rec.onstart = () => {
+                $('mic').classList.add('active');
+                $('voiceStatus').textContent = 'Escuchando...';
+            };
+            rec.onend = () => {
+                $('mic').classList.remove('active');
+                $('voiceStatus').textContent = 'Micrófono listo';
+            };
+            rec.onresult = e => {
+                $('message').value = e.results[0][0].transcript;
+                $('form').requestSubmit();
+            };
+            rec.onerror = e => {
+                $('voiceStatus').textContent = 'Error de micrófono: ' + e.error;
+            };
+            
+            $('mic').onclick = () => rec.start();
+        } else {
+            $('mic').disabled = true;
+            $('voiceStatus').textContent = 'Usa Chrome o Edge para voz';
+        }
+
+        fetch('/api/status')
+            .then(r => r.json())
+            .then(update)
+            .catch(() => {});
+    </script>
+</body>
+</html>
